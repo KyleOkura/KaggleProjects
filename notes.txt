@@ -1,5 +1,7 @@
-adding the embarked port always decreased the linear regression accuracy score
+current models
 
-just sex and age did worse than class, sex, age, sibsp, parch, and fare
+500 estimators
+0.73444
 
-class, sex, age, sibsp, parch, and fare did better when removing the fare
+50 estimators
+0.73923
