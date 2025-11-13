@@ -11,9 +11,8 @@ import matplotlib.pyplot as plt
 def explore():
     testdf = pd.read_csv('test.csv')
     traindf = pd.read_csv('train.csv')
-
+    '''
     traindf["Title"] = traindf['Name'].str.extract(r', ([A-Za-z]+)\.', expand=False)
-
     title_survival_counts = pd.crosstab(traindf["Title"], traindf["Survived"])
     missing_age_count = traindf['Age'].isnull().sum()
     print(title_survival_counts)
@@ -21,12 +20,20 @@ def explore():
     print(f'# entiries missing age count: {missing_age_count}')
     print(f'total entries: {len(traindf)}')
     print()
-
     print(f'Mean age by title: {traindf['Age'].groupby(traindf['Title']).mean()}')
     print()
     print(f'Median age by title: {traindf['Age'].groupby(traindf['Title']).median()}')
     print(traindf['Age'].groupby(traindf['Title']).mean()['Mr'])
     #print(traindf["Title"].value_counts())
+    '''
+
+    embarked_survival_counts = pd.crosstab(traindf["Embarked"], traindf["Survived"])
+    print(embarked_survival_counts)
+
+    print()
+
+    embarked_class_counts = pd.crosstab(traindf["Embarked"], traindf["Pclass"])
+    print(embarked_class_counts)
 
 #explore()
 
@@ -53,50 +60,80 @@ def get_filtered_Xy():
 
 def get_filtered_Xy():
     traindf = pd.read_csv('train.csv')
-    sex_map = {"male": 0, "female": 1}
-    traindf['Sex'] = traindf['Sex'].map(sex_map)
-
+    
     traindf["Title"] = traindf['Name'].str.extract(r', ([A-Za-z]+)\.', expand=False)
-    traindf['Age'] = traindf['Age'].fillna(traindf.groupby('Title')['Age'].transform('mean'))
+    
+    traindf['Title'] = traindf['Title'].replace(['Lady', 'Countess','Capt', 'Col', 'Don', 'Dr', 'Major', 'Rev', 'Sir', 'Jonkheer', 'Dona'], 'Rare')
+    traindf['Title'] = traindf['Title'].replace('Mlle', 'Miss')
+    traindf['Title'] = traindf['Title'].replace('Ms', 'Miss')
+    traindf['Title'] = traindf['Title'].replace('Mme', 'Mrs')
 
-    mean_age = int(traindf['Age'].mean())
-    traindf['Age'] = traindf["Age"].fillna(mean_age)
+    traindf['Age'] = traindf['Age'].fillna(traindf.groupby('Title')['Age'].transform('mean'))
+    traindf['Age'] = traindf['Age'].fillna(traindf['Age'].mean()) 
 
     mode_embarked = traindf['Embarked'].mode()[0]
     traindf['Embarked'] = traindf['Embarked'].fillna(mode_embarked)
-    embarked_map = {"C": 0, "Q": 1, "S": 2}
-    traindf['Embarked'] = traindf['Embarked'].map(embarked_map)
 
-    #X = traindf[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']]
-    X = traindf[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']]
+    traindf['CabinLetter'] = traindf['Cabin'].str[0]
+    traindf['CabinLetter'] = traindf['CabinLetter'].fillna("N")
+
+    traindf['FamilySize'] = traindf['SibSp'] + traindf['Parch'] + 1
+    traindf['IsAlone'] = (traindf['FamilySize'] == 1).astype(int)
+    
+    sex_map = {"male": 0, "female": 1}
+    traindf['Sex'] = traindf['Sex'].map(sex_map)
+
+    traindf['Fare'] = traindf['Fare'].fillna(traindf['Fare'].median())
+    
+    features = ['Pclass', 'Sex', 'Age', 'Fare', 'FamilySize', 'IsAlone',
+                'Embarked', 'Title', 'CabinLetter']
+    
     y = traindf['Survived']
-
-    return (X, y)
+    X = traindf[features] 
+    
+    X_processed = pd.get_dummies(X, columns=['Embarked', 'Title', 'CabinLetter'], drop_first=True)
+    
+    return (X_processed, y)
 
 
 
 
 
 def get_filtered_X():
-    traindf = pd.read_csv('test.csv')
+    testdf = pd.read_csv('test.csv')
+    
+    testdf["Title"] = testdf['Name'].str.extract(r', ([A-Za-z]+)\.', expand=False)
+    
+    testdf['Title'] = testdf['Title'].replace(['Lady', 'Countess','Capt', 'Col', 'Don', 'Dr', 'Major', 'Rev', 'Sir', 'Jonkheer', 'Dona'], 'Rare')
+    testdf['Title'] = testdf['Title'].replace('Mlle', 'Miss')
+    testdf['Title'] = testdf['Title'].replace('Ms', 'Miss')
+    testdf['Title'] = testdf['Title'].replace('Mme', 'Mrs')
+
+    testdf['Age'] = testdf['Age'].fillna(testdf.groupby('Title')['Age'].transform('mean'))
+    testdf['Age'] = testdf['Age'].fillna(testdf['Age'].mean()) 
+
+    mode_embarked = testdf['Embarked'].mode()[0]
+    testdf['Embarked'] = testdf['Embarked'].fillna(mode_embarked)
+
+    testdf['CabinLetter'] = testdf['Cabin'].str[0]
+    testdf['CabinLetter'] = testdf['CabinLetter'].fillna("N")
+
+    testdf['FamilySize'] = testdf['SibSp'] + testdf['Parch'] + 1
+    testdf['IsAlone'] = (testdf['FamilySize'] == 1).astype(int)
+    
     sex_map = {"male": 0, "female": 1}
-    traindf['Sex'] = traindf['Sex'].map(sex_map)
+    testdf['Sex'] = testdf['Sex'].map(sex_map)
 
-    traindf["Title"] = traindf['Name'].str.extract(r', ([A-Za-z]+)\.', expand=False)
-    traindf['Age'] = traindf['Age'].fillna(traindf.groupby('Title')['Age'].transform('mean'))
-
-    mean_age = int(traindf['Age'].mean())
-    traindf['Age'] = traindf["Age"].fillna(mean_age)
-
-    mode_embarked = traindf['Embarked'].mode()[0]
-    traindf['Embarked'] = traindf['Embarked'].fillna(mode_embarked)
-    embarked_map = {"C": 0, "Q": 1, "S": 2}
-    traindf['Embarked'] = traindf['Embarked'].map(embarked_map)
-
-    #X = traindf[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']]
-    X = traindf[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Embarked']]
-
-    return (X)
+    testdf['Fare'] = testdf['Fare'].fillna(testdf['Fare'].median())
+    
+    features = ['Pclass', 'Sex', 'Age', 'Fare', 'FamilySize', 'IsAlone',
+                'Embarked', 'Title', 'CabinLetter']
+    
+    X = testdf[features] 
+    
+    X_processed = pd.get_dummies(X, columns=['Embarked', 'Title', 'CabinLetter'], drop_first=True)
+    
+    return (X_processed)
 
 
 def linear_reg_test(seed):
@@ -172,7 +209,7 @@ def run_random_forest_test():
     avgScore = 0
     avgMSE = 0
     seedRange = 50
-    for x in range(50):
+    for x in range(seedRange):
         score, mse = random_forest_test(seed, 50)
         avgScore += score
         avgMSE += mse
@@ -183,7 +220,7 @@ def run_random_forest_test():
     print(f"Average Random Forest Score over {seedRange} seeds: {avgScore}")
     print(f"Average Random Forest MSE over {seedRange} seeds: {avgMSE}")
 
-run_random_forest_test()
+#run_random_forest_test()
 
     
 #explore()
@@ -236,19 +273,33 @@ def run_tests():
     print(f"linear reg avg score: {round(linear_reg_avg,3)}")
     print(f"decision tree avg score: {round(decision_tree_avg,3)}")
 
-
+'''
 def make_submission():
-    model = RandomForestClassifier(n_estimators=50)
+    model = RandomForestClassifier(n_estimators=115, max_depth=15, min_samples_leaf=3)
     X_train, y_train = get_filtered_Xy()
     model.fit(X_train, y_train)
-
     X_test = get_filtered_X()
+
     predicitions = model.predict(X_test)
 
     submission_df = pd.read_csv('test.csv')
     submission_df['Survived'] = predicitions
     submission_df = submission_df[['PassengerId', 'Survived']]
     submission_df.to_csv('submission.csv', index=False)
+'''
     
+def make_submission():
+    model = RandomForestClassifier(n_estimators=115, max_depth=15, min_samples_leaf=3)
+    X_train, y_train = get_filtered_Xy()
+    X_test = get_filtered_X()
 
-#make_submission()
+    X_train_aligned, X_test_aligned = X_train.align(X_test, join='outer', axis=1, fill_value=0)
+    model.fit(X_train_aligned, y_train)
+    predicitions = model.predict(X_test_aligned)
+
+    submission_df = pd.read_csv('test.csv')
+    submission_df['Survived'] = predicitions
+    submission_df = submission_df[['PassengerId', 'Survived']]
+    submission_df.to_csv('submission.csv', index=False)
+
+make_submission()
