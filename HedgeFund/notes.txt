@@ -1,0 +1,13 @@
+one hot encoding for code, sub code, sub category
+wtf is horizon?
+
+ts index fits hard to model - remove? - test data >4000, training data <3000
+y_target has extremes 0-1 and 99-100 - gradient clipping for training
+filling nans - mean? median? do it by specific code?
+fill 0s? - some features have almost 50% values 0, yet max can be close to 5000000
+
+correlation between features - remove features under 0.4 threshold (ish)
+correlation of remaining features to y_target - remove features with abs(corr) near 0
+XGB model with remaining features (enough clipped and dropped for overfitting? - try lightgbm if case) 
+    - play with hyperparameters to determine top list of features to keep
+try linear combinations with remaining features (cfv) 
