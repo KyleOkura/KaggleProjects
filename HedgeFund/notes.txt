@@ -1,13 +1,30 @@
 one hot encoding for code, sub code, sub category
-wtf is horizon?
 
-ts index fits hard to model - remove? - test data >4000, training data <3000
-y_target has extremes 0-1 and 99-100 - gradient clipping for training
 filling nans - mean? median? do it by specific code?
 fill 0s? - some features have almost 50% values 0, yet max can be close to 5000000
+ts index fits hard to model - remove? - test data >4000, training data <3000
+y_target has extremes 0-1 and 99-100 - gradient clipping for training
 
 correlation between features - remove features under 0.4 threshold (ish)
 correlation of remaining features to y_target - remove features with abs(corr) near 0
 XGB model with remaining features (enough clipped and dropped for overfitting? - try lightgbm if case) 
     - play with hyperparameters to determine top list of features to keep
 try linear combinations with remaining features (cfv) 
+
+
+
+
+
+one hot encoding
+23 codes
+180 sub codes
+4 sub categories
+
+can one hot encoding sub categories, and target encoding for code and sub codes (if high correlation exists)
+
+also 4 horizons (1, 3, 10, 25) - can one hot encode
+(1 represents short term, 25 long term but no direct reference to the actual time)
+
+a lot of the values with high 0s have large std dev (makes sense)
+ - missing columns with large empty values and no zeros can we easily replaced with mean/median
+ 
