@@ -1,0 +1,24 @@
+
+
+all cleaning features present
+full train set used
+
+xgb model:
+val rmse 
+2.37
+
+keeping all y values was shit 
+20
+
+not ohe top missing features 
+2.38
+
+ohe top 2 missing features
+2.37
+
+target encoding mean instead of median
+2.36
+
+
+nn:
+comp score 0.01224

@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "neural-xgboost-project"
+version = "0.1.0"
+description = "A project that combines a PyTorch neural network and an XGBoost model for enhanced machine learning capabilities."
+authors = ["Your Name <youremail@example.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+torch = "^1.12.0"
+xgboost = "^1.5.0"
+numpy = "^1.21.0"
+pandas = "^1.3.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
