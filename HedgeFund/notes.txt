@@ -42,3 +42,76 @@ Missing %,Recommended Action
 < 5%,Simple Imputation (Median). Do not create a new column.
 5% - 10%,"Gray Area. If the feature has high correlation with y_target, use an indicator. Otherwise, simple imputation."
 > 10%,Method 3 (Median + Indicator Column). The missingness is likely a signal itself.
+
+
+
+
+
+
+
+linear model on val data for dropping y_target
+none - 
+Validation RMSE: 32.440975
+R² Score: 0.011889
+
+
+top and bottom 0.5%
+Validation RMSE: 12.632034
+R² Score: 0.028234
+
+
+top and bottom 1%
+Validation RMSE: 7.897090
+R² Score: 0.041549
+
+
+top and bottom 2%
+Validation RMSE: 3.858839
+R² Score: 0.058688
+
+
+top and bottom 5%
+Validation RMSE: 1.124193
+R² Score: 0.076526
+
+
+top and bottom 10%
+Validation RMSE: 0.343448
+R² Score: 0.105303
+
+
+top and bottom 12.5%
+Validation RMSE: 0.214022
+R² Score: 0.114385
+    Mean weight (all): 13409914.219274
+    Mean weight (dropped): 42.807257
+    Mean weight (remaining): 17879893.689314
+
+
+top and bottom 15%
+Validation RMSE: 0.139398
+R² Score: 0.117090
+
+
+top and bottom 20%
+Validation RMSE: 0.063781
+R² Score: 0.121161
+    Mean weight (all): 13409914.219274
+    Mean weight (dropped): 434.741517
+    Mean weight (remaining): 22349650.949837
+
+
+top and bottom 25%
+Validation RMSE: 0.029971
+R² Score: 0.150388
+    Mean weight (all): 13409914.219274
+    Mean weight (dropped): 1353.121780
+    Mean weight (remaining): 26818575.804355
+
+
+top and bottom 30%
+Validation RMSE: 0.013041
+R² Score: 0.243743
+    Mean weight (all): 13409914.219274
+    Mean weight (dropped): 6887.453898
+    Mean weight (remaining): 33514579.924977
